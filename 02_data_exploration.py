@@ -14,7 +14,7 @@ Exported files include:
     - "graphs/feature-numeric-<feature_name>.png"
 
 Example Use:
-    python3 02_data_exloration.py -i artifacts -o graphs
+    python3 02_data_exploration.py -i artifacts -o graphs
 """
 # TODO:
 #       - Build graphs of feature characterization
@@ -54,8 +54,8 @@ def main():
     common_feature_df = get_selected_features(feature_df, top_common_libs + ["label"])
     print(df_stats(common_feature_df))
 
-    plot_import_hist(feature_freq_file, args.output)
-    plot_import_hist(common_feature_df, args.output, common=top_common_libs)
+    #plot_import_hist(feature_freq_file, args.output)
+    plot_import_hist(feature_freq_file, args.output, common=top_common_libs)
 
     # sns.pairplot(common_feature_df)
     # plt.savefig(args.output / 'feature-pairplot.png')
@@ -96,15 +96,16 @@ def get_selected_features(df, features):
     return df.loc[:, features]
 
 
-def plot_import_hist(file_name, directory, common=None):
-    df = pd.read_csv(file_name, names=["file_name", "count"], index_col="file_name")
+def plot_import_hist(freqs_fn, directory, common=None):
+    df = pd.read_csv(freqs_fn, names=["name", "count"], index_col="name")
     df.sort_values("count", inplace=True, ascending=False)
     if common is None:
         df.plot.bar()
         plt.savefig(directory / f'feature-count-hist-all.png')
     else:
-        df = df[df["file_name"] in common].dropna()
+        df = df.loc[common]
         df.plot.bar()
+        plt.tight_layout()
         plt.savefig(directory / f'feature-count-hist-common.png')
 
 
