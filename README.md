@@ -15,9 +15,12 @@ functions imported from common dynamically linked libraries.
 
 ## Run Tools
 
-### Extracting and cleaning data from the ember dataset
+### Extract and clean data from the ember dataset
 - `python3 01_data_cleaning.py -d ember/ember_data -o training`
 - `mkdir artifacts`
 - `vm training* artifacts/`
 
-
+### Producing graphs for the user to view and evaluate
+- `python3 02_data_exloration.py -i artifacts -o graphs`
+- View the graphs in the `graphs` folder to understand the
+  features better
