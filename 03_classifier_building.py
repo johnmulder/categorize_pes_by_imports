@@ -63,6 +63,7 @@ def main():
     with open(args.output, "wt", encoding="utf-8") as out_file:
         print_metrics_header(out_file)
         assess_naive_classifiers(X, y, out_file)
+        evaluate_params_for_classifers(X, y, out_file)
 
 
 def assess_naive_classifiers(X, y, out_file):
@@ -128,20 +129,17 @@ def evaluate_params_for_classifers(X, y, out_file):
         clf = classifier_class(**best_params)
         print("### Metrics with the 'best parameters'")
         assess_classifier(X, y, clf, out_file)
+        out_file.write("\n")
 
 
 def evaluate_params(X, y, classifier_class, parameters):
-    print(f"## Evaluating {classifier_class.name}")
-    print("### Starting GridSearchCV")
+    print(f"## Evaluating {classifier_class.__name__} for best parameters")
     clf = classifier_class()
     grid = GridSearchCV(clf, parameters)
-    print("### Created GridSearchCV")
     grid.fit(X, y)
-    print("### Fit GridSearchCV")
     best_params = {}
     for param_name in parameters:
         best_params[param_name] = grid.best_params_[param_name]
-    print("### Best Params Found")
     pprint(best_params)
     return best_params
 
@@ -150,6 +148,7 @@ def print_metrics_header(out_file):
     out_file.write(
         "| Classifier | Accuracy | Recall | F1 Score | cross_val_score | cross_val_std |"
     )
+    out_file.write("\n")
 
 
 def print_metrics(y_true, y_pred, clf, out_file):
