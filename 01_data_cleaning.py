@@ -44,9 +44,8 @@ def main():
         parser.print_help()
         parser.exit()
     feature_list, names, counts, frequency = extract_features(in_files)
-
     write_dict_list(feature_list, f"{args.output}-values.parquet")
-    write_out_feature_list(names, f"{args.output}-names.txt")
+    write_feature_list(names, f"{args.output}-names.txt")
     write_dict(counts, f"{args.output}-counts.csv")
     write_dict(frequency, f"{args.output}-frequency.csv")
 
@@ -86,15 +85,13 @@ def extract_features(in_files):
         total_column_counts.update(column_counts)
         total_column_frequency.update(column_feqs)
         print("Totals from a process have been combined")
-    print("Join the processes as they finish")
     for process in processes:
         process.join()  # this blocks until the process terminates
         print("A process has finished/joined")
     # Report out the aggregate results
     print(f"got features for {len(total_feature_dict_list)} different samples")
-
     # Remove the uncommon features from the total_feature_dict_list
-    common_columns = {c[0] for c in  total_column_counts.most_common(100)}
+    common_columns = {c[0] for c in total_column_counts.most_common(100)}
     common_columns.add("label")
     reduced_feat_dicts = [reduce(d, common_columns) for d in total_feature_dict_list]
     return (
@@ -168,10 +165,11 @@ def get_import_data(pe_info):
 
 
 def reduce(orig_dict, keys_to_keep):
-    return {k:v for k, v in orig_dict.items() if k in keys_to_keep}
+    "remove all keys not in keys_to_keep from orig_dict"
+    return {k: v for k, v in orig_dict.items() if k in keys_to_keep}
 
 
-def write_out_feature_list(column_names, out_file_name):
+def write_feature_list(column_names, out_file_name):
     "Writes out a list of features to a text file, one name per line."
     print(f"got {len(column_names)} imported files combined across those")
     with open(out_file_name, "wt", encoding="utf-8") as out_file:
@@ -190,7 +188,6 @@ def write_dict(feature_dict, out_file_name):
 
 def write_dict_list(dict_list, out_file_name):
     "Writes out a list of dictionaries into a parquet file"
-
     print("Attempting to create DataFrame from dictionaries")
     df = pd.DataFrame(dict_list)
     print("Successfuly created DataFrame from dictionaries")

@@ -17,6 +17,7 @@ Example Use:
     python3 02_data_exploration.py -i artifacts -o graphs
 """
 import argparse
+from base64 import encode
 import pathlib
 
 import matplotlib.pyplot as plt
@@ -41,7 +42,7 @@ def main():
         "-o",
         "--output",
         type=pathlib.Path,
-        help="input directory path",
+        help="output directory path",
         default="graphs",
     )
     args = parser.parse_args()
@@ -76,7 +77,9 @@ def main():
 
 
 def df_stats(df):
-    "returns a pandas Dataframe of key statistical properties that describe the columns of a Dataset"
+    """
+    Returns pandas Dataframe of key statistical properties that describe the columns of a df
+    """
     mean = pd.DataFrame(df.mean())
     unique = df.apply(lambda x: x.unique().shape[0])
     skew = df.skew()
@@ -113,6 +116,10 @@ def plot_numeric(df, cols, target, directory):
 
 
 def plot_feature_importance(df, directory):
+    """
+    Writes a plot of the importance of features (in a RandomForestClassifier)
+    of an import file's frequency to a PNG
+    """
     clf = RandomForestClassifier()
     features = df.drop("label", axis=1).values
     clf.fit(features, df["label"].values)
