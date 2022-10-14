@@ -72,9 +72,12 @@ def assess_naive_classifiers(X, y, out_file):
     (with naively chosen hyper-parameters)
     """
     assess_classifier(X, y, LogisticRegression(), out_file)
+    out_file.write("\n")
     assess_classifier(X, y, DecisionTreeClassifier(), out_file)
-    assess_classifier(X, y, RandomForestClassifier(), out_file)
-    assess_classifier(X, y, AdaBoostClassifier(), out_file)
+    out_file.write("\n")
+    #assess_classifier(X, y, RandomForestClassifier(), out_file)
+    #assess_classifier(X, y, AdaBoostClassifier(), out_file)
+    ...
 
 
 def assess_classifier(X, y, clf, out_file):
@@ -108,18 +111,18 @@ def evaluate_params_for_classifers(X, y, out_file):
             "criterion": ["gini", "entropy", "log_loss"],
             "max_features": ["sqrt", "log2", None],
         },
-        RandomForestClassifier: {
-            "n_estimators": [10**x for x in (2, 3)],
-            "max_depth": [2**x for x in (2, 3)] + [None],
-            "criterion": ["gini", "entropy", "log_loss"],
-            "max_features": ["sqrt", "log2", None],
-        },
-        AdaBoostClassifier: {
-            "base_estimator": (),
-            "max_depth": [2**x for x in (2, 3, 4)] + [None],
-            "criterion": ["gini", "entropy", "log_loss"],
-            "max_features": ["sqrt", "log2", None],
-        },
+        # RandomForestClassifier: {
+        #     "n_estimators": [10**x for x in (2, 3)],
+        #     "max_depth": [2**x for x in (2, 3)] + [None],
+        #     "criterion": ["gini", "entropy", "log_loss"],
+        #     "max_features": ["sqrt", "log2", None],
+        # },
+        # AdaBoostClassifier: {
+        #     "base_estimator": (),
+        #     "max_depth": [2**x for x in (2, 3, 4)] + [None],
+        #     "criterion": ["gini", "entropy", "log_loss"],
+        #     "max_features": ["sqrt", "log2", None],
+        # },
     }
     for classifier_class, params in params_by_class.items():
         # suppressing all warnings, because GridSearchCV throws a lot
@@ -160,3 +163,4 @@ def print_metrics(y_true, y_pred, clf, out_file):
 
 if __name__ == "__main__":
     main()
+
